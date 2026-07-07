@@ -6,13 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
 
     <PackageId>Swevo.AutoBus</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Justin Bannister</Authors>
     <Copyright>Copyright (c) 2026 Justin Bannister</Copyright>
     <Description>Free, MIT-licensed in-process message bus for .NET with pub/sub consumers, Polly-backed retry, and transactional-outbox-friendly delivery. A focused alternative to MassTransit for modular monoliths that want reliable messaging without adopting a paid distributed messaging framework or a heavyweight broker dependency.</Description>
     <PackageTags>messaging;message-bus;pubsub;outbox;masstransit-alternative;polly;resilience;dotnet;csharp;free;mit;modular-monolith</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/Swevo/AutoBus</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Swevo/AutoBus</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -22,10 +23,11 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
-    <PackageReleaseNotes>1.0.0: Initial release. IConsumer&lt;T&gt;, IMessageBus (Publish/Send), in-memory transport, Polly retry, DI registration.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.0.1: Add missing package icon. 1.0.0: Initial release. IConsumer&lt;T&gt;, IMessageBus (Publish/Send), in-memory transport, Polly retry, DI registration.</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\..\icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.*" />

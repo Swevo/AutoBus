@@ -6,13 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
 
     <PackageId>Swevo.AutoBus.RabbitMQ</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Justin Bannister</Authors>
     <Copyright>Copyright (c) 2026 Justin Bannister</Copyright>
     <Description>RabbitMQ transport for AutoBus. Publishes messages to a fanout exchange per message type and hosts a background consumer that binds a durable queue for every registered AutoBus consumer, so the same IConsumer&lt;T&gt;/IMessageBus programming model works across process boundaries.</Description>
     <PackageTags>messaging;message-bus;rabbitmq;autobus;masstransit-alternative;dotnet;csharp;free;mit</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/Swevo/AutoBus</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Swevo/AutoBus</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -22,10 +23,11 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
-    <PackageReleaseNotes>1.0.0: Initial release. RabbitMqTransport (publish) + RabbitMqConsumerHost (receive/dispatch).</PackageReleaseNotes>
+    <PackageReleaseNotes>1.0.1: Add missing package icon. 1.0.0: Initial release. RabbitMqTransport (publish) + RabbitMqConsumerHost (receive/dispatch).</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\..\icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoBus\AutoBus.csproj" />
