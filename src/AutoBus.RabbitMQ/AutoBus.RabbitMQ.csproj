@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <PackageId>Swevo.AutoBus.RabbitMQ</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Justin Bannister</Authors>
+    <Copyright>Copyright (c) 2026 Justin Bannister</Copyright>
+    <Description>RabbitMQ transport for AutoBus. Publishes messages to a fanout exchange per message type and hosts a background consumer that binds a durable queue for every registered AutoBus consumer, so the same IConsumer&lt;T&gt;/IMessageBus programming model works across process boundaries.</Description>
+    <PackageTags>messaging;message-bus;rabbitmq;autobus;masstransit-alternative;dotnet;csharp;free;mit</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Swevo/AutoBus</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Swevo/AutoBus</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <PackageReleaseNotes>1.0.0: Initial release. RabbitMqTransport (publish) + RabbitMqConsumerHost (receive/dispatch).</PackageReleaseNotes>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoBus\AutoBus.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="6.*" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.*" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.*" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="AutoBus.RabbitMQ.Tests" />
+  </ItemGroup>
+</Project>
