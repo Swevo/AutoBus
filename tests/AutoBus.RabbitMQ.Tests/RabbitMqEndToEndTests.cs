@@ -64,6 +64,7 @@ public class RabbitMqEndToEndTests : IAsyncLifetime
         PingConsumer.Received = new TaskCompletionSource<int>();
 
         var uri = new Uri(_container!.GetConnectionString());
+        var userInfo = uri.UserInfo.Split(':', 2);
 
         using var host = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
@@ -73,8 +74,8 @@ public class RabbitMqEndToEndTests : IAsyncLifetime
                 {
                     options.HostName = uri.Host;
                     options.Port = uri.Port;
-                    options.UserName = "guest";
-                    options.Password = "guest";
+                    options.UserName = userInfo[0];
+                    options.Password = userInfo[1];
                     options.QueuePrefix = "autobus-tests";
                 });
             })
