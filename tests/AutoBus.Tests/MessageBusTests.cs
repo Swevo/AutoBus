@@ -10,6 +10,8 @@ public class MessageBusTests
         RecordingConsumer.ConsumedOrderIds.Clear();
         SecondRecordingConsumer.ConsumedOrderIds.Clear();
         SingleConsumerForSend.ConsumedOrderIds.Clear();
+        OrderStatusRequestHandler.CorrelationIdsByOrderId.Clear();
+        FlakyOrderStatusRequestHandler.Attempts = 0;
         FlakyConsumer.Attempts = 0;
         AlwaysFailingConsumer.Attempts = 0;
     }
@@ -154,5 +156,113 @@ public class MessageBusTests
             services.AddAutoBus(cfg => cfg.AddConsumer<NotAConsumer>()));
     }
 
+    [Fact]
+    public async Task GetResponseAsync_Returns_Response_From_Single_Registered_Handler()
+    {
+        var services = new ServiceCollection();
+        services.AddAutoBus(cfg => cfg.AddRequestHandler<OrderStatusRequestHandler>());
+        await using var provider = services.BuildServiceProvider();
+
+        var client = provider.GetRequiredService<IRequestClient<OrderStatusRequest, OrderStatusResponse>>();
+        var response = await client.GetResponseAsync(new OrderStatusRequest(42));
+
+        Assert.Equal(42, response.OrderId);
+        Assert.Equal("Processed-42", response.Status);
+        Assert.True(OrderStatusRequestHandler.CorrelationIdsByOrderId.TryGetValue(42, out var correlationId));
+        Assert.NotEqual(Guid.Empty, correlationId);
+    }
+
+    [Fact]
+    public async Task GetResponseAsync_When_Handler_Does_Not_Reply_Before_Timeout_Throws_RequestTimeoutException()
+    {
+        var services = new ServiceCollection();
+        services.AddAutoBus(cfg =>
+        {
+            cfg.AddRequestHandler<NeverRespondingRequestHandler>();
+            cfg.UseRequestTimeout(TimeSpan.FromMilliseconds(50));
+        });
+        await using var provider = services.BuildServiceProvider();
+
+        var client = provider.GetRequiredService<IRequestClient<OrderStatusRequest, OrderStatusResponse>>();
+
+        var exception = await Assert.ThrowsAsync<RequestTimeoutException>(() =>
+            client.GetResponseAsync(new OrderStatusRequest(1), timeout: TimeSpan.FromMilliseconds(50)));
+
+        Assert.Equal(typeof(OrderStatusRequest), exception.RequestType);
+        Assert.Equal(typeof(OrderStatusResponse), exception.ResponseType);
+        Assert.Equal(TimeSpan.FromMilliseconds(50), exception.Timeout);
+    }
+
+    [Fact]
+    public async Task GetResponseAsync_Correlates_Concurrent_Requests_Correctly()
+    {
+        var services = new ServiceCollection();
+        services.AddAutoBus(cfg => cfg.AddRequestHandler<OrderStatusRequestHandler>());
+        await using var provider = services.BuildServiceProvider();
+
+        var client = provider.GetRequiredService<IRequestClient<OrderStatusRequest, OrderStatusResponse>>();
+        var requests = Enumerable.Range(1, 20)
+            .Select(orderId => client.GetResponseAsync(new OrderStatusRequest(orderId, DelayMilliseconds: 5 + ((20 - orderId) % 5) * 15)))
+            .ToArray();
+
+        var responses = await Task.WhenAll(requests);
+
+        Assert.Equal(20, responses.Length);
+        foreach (var response in responses)
+        {
+            Assert.Equal($"Processed-{response.OrderId}", response.Status);
+        }
+
+        Assert.Equal(20, OrderStatusRequestHandler.CorrelationIdsByOrderId.Count);
+        Assert.Equal(20, OrderStatusRequestHandler.CorrelationIdsByOrderId.Values.Distinct().Count());
+    }
+
+    [Fact]
+    public async Task GetResponseAsync_When_Handler_Throws_Propagates_Exception()
+    {
+        var services = new ServiceCollection();
+        services.AddAutoBus(cfg =>
+        {
+            cfg.AddRequestHandler<OrderStatusRequestHandler>();
+            cfg.UseRetry(retryCount: 0);
+        });
+        await using var provider = services.BuildServiceProvider();
+
+        var client = provider.GetRequiredService<IRequestClient<OrderStatusRequest, OrderStatusResponse>>();
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            client.GetResponseAsync(new OrderStatusRequest(9, Fail: true)));
+
+        Assert.Equal("Request failed for order 9.", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetResponseAsync_RequestHandler_TransientFailure_IsRetried_UntilSuccess()
+    {
+        var services = new ServiceCollection();
+        services.AddAutoBus(cfg =>
+        {
+            cfg.AddRequestHandler<FlakyOrderStatusRequestHandler>();
+            cfg.UseRetry(retryCount: 5, baseDelay: TimeSpan.FromMilliseconds(1));
+        });
+        await using var provider = services.BuildServiceProvider();
+
+        var client = provider.GetRequiredService<IRequestClient<OrderStatusRequest, OrderStatusResponse>>();
+        var response = await client.GetResponseAsync(new OrderStatusRequest(33));
+
+        Assert.Equal(33, response.OrderId);
+        Assert.Equal("Recovered-33", response.Status);
+        Assert.Equal(3, FlakyOrderStatusRequestHandler.Attempts);
+    }
+
+    [Fact]
+    public void AddRequestHandler_ForTypeNotImplementingIRequestHandler_Throws()
+    {
+        var services = new ServiceCollection();
+        Assert.Throws<InvalidOperationException>(() =>
+            services.AddAutoBus(cfg => cfg.AddRequestHandler<NotARequestHandler>()));
+    }
+
     private sealed class NotAConsumer;
+    private sealed class NotARequestHandler;
 }

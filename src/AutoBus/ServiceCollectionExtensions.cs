@@ -22,11 +22,14 @@ public static class ServiceCollectionExtensions
 
         var options = new AutoBusOptions();
         var registry = new ConsumerRegistry();
-        var configurator = new AutoBusConfigurator(services, registry, options);
+        var requestHandlerRegistry = new RequestHandlerRegistry();
+        var configurator = new AutoBusConfigurator(services, registry, requestHandlerRegistry, options);
         configure(configurator);
 
         services.TryAddSingleton(registry);
+        services.TryAddSingleton(requestHandlerRegistry);
         services.TryAddSingleton(options);
+        services.TryAddSingleton<RequestResponseRegistry>();
         services.TryAddSingleton(sp => RetryPipelineFactory.Create(sp.GetRequiredService<AutoBusOptions>()));
         services.TryAddSingleton(sp => new ConsumerDispatcher(
             sp,
@@ -34,6 +37,7 @@ public static class ServiceCollectionExtensions
             sp.GetService<ILogger<ConsumerDispatcher>>() ?? NullLogger<ConsumerDispatcher>.Instance));
         services.TryAddSingleton<IBusTransport, InMemoryTransport>();
         services.TryAddSingleton<IMessageBus, MessageBus>();
+        services.TryAddSingleton(typeof(IRequestClient<,>), typeof(RequestClient<,>));
 
         return services;
     }

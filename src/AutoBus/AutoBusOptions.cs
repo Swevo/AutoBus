@@ -14,4 +14,7 @@ public sealed class AutoBusOptions
 
     /// <summary>Base delay between retry attempts (exponential backoff). Default is 200ms.</summary>
     public TimeSpan RetryBaseDelay { get; set; } = TimeSpan.FromMilliseconds(200);
+
+    /// <summary>Default timeout for request/response operations. Default is 30 seconds.</summary>
+    public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(30);
 }

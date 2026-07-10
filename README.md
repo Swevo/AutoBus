@@ -56,6 +56,8 @@ dotnet add package Swevo.AutoBus.RabbitMQ
   (zero consumers is not an error).
 - **`IMessageBus.SendAsync`** — point-to-point; throws if zero or more than one consumer is
   registered for the message type.
+- **`IRequestClient<TRequest, TResponse>`** — sends a request to exactly one
+  `IRequestHandler<TRequest, TResponse>` and awaits its correlated response.
 - **Retry** — every consumer invocation runs through a Polly retry pipeline (exponential
   backoff, 3 attempts by default). Configure with `cfg.UseRetry(retryCount, baseDelay)`.
 - **Transports** — `InMemoryTransport` (default, in-process dispatch) or
@@ -77,6 +79,45 @@ Publishing a message sends it to a fanout exchange named after the message's ful
 durable queue for every locally-registered consumer, so the same `IConsumer<T>` code runs
 whether messages arrive in-process or over the broker — call `AddAutoBusRabbitMq` *after*
 `AddAutoBus` since it replaces the default in-memory transport.
+
+## Request/Response
+
+If you're migrating from MassTransit, AutoBus now supports the familiar "send a request and
+await a correlated reply" pattern for in-process modular-monolith calls:
+
+```csharp
+public sealed record GetOrderStatus(int OrderId);
+public sealed record OrderStatus(string Value);
+
+public sealed class GetOrderStatusHandler : IRequestHandler<GetOrderStatus, OrderStatus>
+{
+    public Task<OrderStatus> Consume(ConsumeContext<GetOrderStatus> context)
+        => Task.FromResult(new OrderStatus($"Order {context.Message.OrderId} is ready"));
+}
+
+services.AddAutoBus(cfg =>
+{
+    cfg.AddRequestHandler<GetOrderStatusHandler>();
+    cfg.UseRequestTimeout(TimeSpan.FromSeconds(10)); // optional, default is 30s
+});
+
+var client = serviceProvider.GetRequiredService<IRequestClient<GetOrderStatus, OrderStatus>>();
+var response = await client.GetResponseAsync(new GetOrderStatus(42));
+```
+
+Conceptually this is similar to MassTransit's `IRequestClient<TRequest>.GetResponse<TResponse>()`,
+but AutoBus keeps it intentionally small:
+
+- **In-process only.** Request/response uses an in-memory correlation registry and local handler
+  dispatch; it is not a distributed RPC abstraction across RabbitMQ or other transports.
+- **Exactly one handler.** `GetResponseAsync` throws if zero or more than one matching
+  `IRequestHandler<TRequest, TResponse>` is registered.
+- **Same retry pipeline.** Request handlers execute through the same Polly-backed retry pipeline
+  as regular `IConsumer<T>` deliveries.
+- **Correlated replies.** Every request gets a correlation ID exposed as
+  `ConsumeContext<TRequest>.CorrelationId`.
+- **Clear timeout behavior.** If no response arrives before the effective timeout, AutoBus throws
+  `RequestTimeoutException`.
 
 ## Using AutoBus from an EF Core transactional outbox
 
