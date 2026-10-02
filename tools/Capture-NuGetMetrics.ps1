@@ -5,7 +5,7 @@ param(
 $packages = @(
     @{ Id = "Swevo.AutoBus"; Version = "1.2.0"; Baseline = 616 },
     @{ Id = "Swevo.AutoBus.RabbitMQ"; Version = "1.0.2"; Baseline = 488 },
-    @{ Id = "Swevo.AutoBus.Analyzers"; Version = "1.1.0"; Baseline = 0 }
+    @{ Id = "Swevo.AutoBus.Analyzers"; Version = "1.2.0"; Baseline = 0 }
 )
 
 $rows = foreach ($package in $packages) {

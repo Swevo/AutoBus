@@ -23,6 +23,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <WarningsAsErrors>ABUS001;ABUS002;ABUS003;ABUS004;ABUS005</WarningsAsErrors>
     <PackageReleaseNotes>1.2.0: Add middleware pipeline, dead-letter sink abstraction, message deduplication hook, deferred scheduling (IMessageScheduler), delivery trace sink, partition-key concurrency controls, retry jitter option, consumer failure cooldown, and minimal saga primitives (ISaga/ISagaStateStore). 1.1.0: Add in-process request/response messaging via IRequestClient&lt;TRequest, TResponse&gt; and IRequestHandler&lt;TRequest, TResponse&gt; with correlated replies, configurable timeout handling, and retry-backed handler execution. 1.0.1: Add missing package icon. 1.0.0: Initial release. IConsumer&lt;T&gt;, IMessageBus (Publish/Send), in-memory transport, Polly retry, DI registration.</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
@@ -36,6 +37,9 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.401" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoBus.Analyzers\AutoBus.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="AutoBus.Tests" />

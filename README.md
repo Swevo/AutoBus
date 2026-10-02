@@ -177,11 +177,16 @@ MassTransit for exactly this reason.
 - **ABUS001** — warns when `PublishAsync` / `SendAsync` / `SchedulePublishAsync` is fire-and-forget.
 - **ABUS002** — warns on broad `catch (Exception)` inside `IConsumer<T>` / `IRequestHandler<,>`.
 - **ABUS003** — warns when `UseRetry(...)` is configured with an excessively large retry count.
+- **ABUS004** — warns when a `CancellationToken` is available but not forwarded to bus/scheduler calls.
+- **ABUS005** — warns when `UseConsumerFailureCooldown(...)` is enabled without delivery tracing.
 
 All rules include code fixes. Rule docs:
 [`ABUS001`](docs/analyzers/ABUS001.md),
 [`ABUS002`](docs/analyzers/ABUS002.md),
-[`ABUS003`](docs/analyzers/ABUS003.md).
+[`ABUS003`](docs/analyzers/ABUS003.md),
+[`ABUS004`](docs/analyzers/ABUS004.md),
+[`ABUS005`](docs/analyzers/ABUS005.md),
+[`Migration guide`](docs/analyzers/MIGRATION.md).
 
 ## Roadmap
 

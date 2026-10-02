@@ -8,7 +8,7 @@ Body:
 
 - `Swevo.AutoBus 1.2.0` adds middleware, dead-lettering hooks, dedupe hooks, partitioned concurrency, cooldowns, scheduling, and telemetry.
 - `Swevo.AutoBus.RabbitMQ 1.0.2` removes the NU1902 transitive warning by upgrading SourceLink.
-- `Swevo.AutoBus.Analyzers 1.1.0` adds three diagnostics **with code fixes**:
+- `Swevo.AutoBus.Analyzers 1.2.0` adds five diagnostics (ABUS001-ABUS005) with code fixes for ABUS001-ABUS003:
   - `ABUS001` missing await on bus/scheduler async calls
   - `ABUS002` broad `catch (Exception)` in consumers/handlers
   - `ABUS003` excessive retry count in `UseRetry(...)`

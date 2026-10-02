@@ -30,4 +30,22 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Very large retry counts can cause prolonged outages, duplicate side-effects, and queue starvation.");
+
+    public static readonly DiagnosticDescriptor MissingCancellationTokenForwarding = new(
+        id: "ABUS004",
+        title: "Forward cancellation token",
+        messageFormat: "Call to '{0}' should forward the available cancellation token",
+        category: "Reliability",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "When a method already has a CancellationToken parameter, AutoBus async operations should forward it to preserve cooperative cancellation.");
+
+    public static readonly DiagnosticDescriptor CooldownWithoutTracing = new(
+        id: "ABUS005",
+        title: "Cooldown configured without tracing",
+        messageFormat: "UseConsumerFailureCooldown is configured without EnableDeliveryTracing",
+        category: "Observability",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Failure cooldowns should be paired with delivery tracing to make blocked deliveries diagnosable.");
 }

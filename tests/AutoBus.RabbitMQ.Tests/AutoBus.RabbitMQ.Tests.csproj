@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-    <WarningsAsErrors>ABUS001;ABUS002;ABUS003</WarningsAsErrors>
+    <WarningsAsErrors>ABUS001;ABUS002;ABUS003;ABUS004;ABUS005</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\AutoBus\AutoBus.csproj" />

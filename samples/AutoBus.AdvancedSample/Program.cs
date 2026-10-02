@@ -18,6 +18,7 @@ services.AddAutoBus(cfg =>
     cfg.UsePartitioning((message, _) =>
         message is OrderCreated created ? $"order:{created.OrderId}" : null);
     cfg.UseConsumerFailureCooldown(TimeSpan.FromSeconds(5));
+    cfg.EnableDeliveryTracing();
 });
 
 await using var provider = services.BuildServiceProvider();

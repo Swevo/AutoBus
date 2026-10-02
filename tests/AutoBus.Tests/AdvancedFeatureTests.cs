@@ -145,6 +145,7 @@ public class AdvancedFeatureTests
             cfg.AddConsumer<CooldownConsumer>();
             cfg.UseRetry(0);
             cfg.UseConsumerFailureCooldown(TimeSpan.FromMilliseconds(80));
+            cfg.EnableDeliveryTracing();
         });
 
         await using var provider = services.BuildServiceProvider();
