@@ -101,3 +101,11 @@ or in `.editorconfig` for scoped paths:
 [src/Legacy/**.cs]
 dotnet_diagnostic.ABUS003.severity = none
 ```
+
+## 4) Policy profiles
+
+Copy one of these templates into your repository and tune:
+
+- `docs/analyzers/policies/strict.editorconfig`
+- `docs/analyzers/policies/default.editorconfig`
+- `docs/analyzers/policies/legacy.editorconfig`

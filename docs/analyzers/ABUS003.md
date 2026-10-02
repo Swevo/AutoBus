@@ -23,3 +23,11 @@ After:
 ```csharp
 cfg.UseRetry(10);
 ```
+
+## Suppression (when intentional)
+
+```csharp
+#pragma warning disable ABUS003
+cfg.UseRetry(25); // explicitly accepted in this service
+#pragma warning restore ABUS003
+```

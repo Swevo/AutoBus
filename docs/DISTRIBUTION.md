@@ -8,7 +8,7 @@ Body:
 
 - `Swevo.AutoBus 1.2.0` adds middleware, dead-lettering hooks, dedupe hooks, partitioned concurrency, cooldowns, scheduling, and telemetry.
 - `Swevo.AutoBus.RabbitMQ 1.0.2` removes the NU1902 transitive warning by upgrading SourceLink.
-- `Swevo.AutoBus.Analyzers 1.2.0` adds five diagnostics (ABUS001-ABUS005) with code fixes for ABUS001-ABUS003:
+- `Swevo.AutoBus.Analyzers 1.3.0` adds five diagnostics (ABUS001-ABUS005) with code fixes for **all** ABUS rules.
   - `ABUS001` missing await on bus/scheduler async calls
   - `ABUS002` broad `catch (Exception)` in consumers/handlers
   - `ABUS003` excessive retry count in `UseRetry(...)`
@@ -26,3 +26,9 @@ NuGet:
 - https://www.nuget.org/packages/Swevo.AutoBus
 - https://www.nuget.org/packages/Swevo.AutoBus.RabbitMQ
 - https://www.nuget.org/packages/Swevo.AutoBus.Analyzers
+
+Verification links:
+- https://www.nuget.org/packages/Swevo.AutoBus.Analyzers/1.2.0
+- https://api.nuget.org/v3-flatcontainer/swevo.autobus.analyzers/1.2.0/swevo.autobus.analyzers.1.2.0.nupkg
+- https://www.nuget.org/packages/Swevo.AutoBus.Analyzers/1.3.0
+- https://api.nuget.org/v3-flatcontainer/swevo.autobus.analyzers/1.3.0/swevo.autobus.analyzers.1.3.0.nupkg

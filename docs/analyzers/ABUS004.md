@@ -29,3 +29,11 @@ public async Task HandleAsync(IMessageBus bus, CancellationToken cancellationTok
     await bus.PublishAsync(new OrderCreated(42), cancellationToken);
 }
 ```
+
+## Suppression (when intentional)
+
+```csharp
+#pragma warning disable ABUS004
+await bus.PublishAsync(new OrderCreated(42));
+#pragma warning restore ABUS004
+```

@@ -6,7 +6,7 @@
 |---|---:|---:|
 | Swevo.AutoBus | 1.2.0 | 616 total downloads (2026-10-02) |
 | Swevo.AutoBus.RabbitMQ | 1.0.2 | 488 total downloads (2026-10-02) |
-| Swevo.AutoBus.Analyzers | 1.2.0 | 0 total downloads (2026-10-02) |
+| Swevo.AutoBus.Analyzers | 1.3.0 | 0 total downloads (2026-10-02) |
 
 ## Day-7 checkpoint
 

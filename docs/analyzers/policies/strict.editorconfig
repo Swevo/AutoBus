@@ -1,0 +1,8 @@
+root = true
+
+[*.cs]
+dotnet_diagnostic.ABUS001.severity = error
+dotnet_diagnostic.ABUS002.severity = error
+dotnet_diagnostic.ABUS003.severity = error
+dotnet_diagnostic.ABUS004.severity = error
+dotnet_diagnostic.ABUS005.severity = error

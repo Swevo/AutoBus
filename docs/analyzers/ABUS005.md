@@ -28,3 +28,11 @@ services.AddAutoBus(cfg =>
     cfg.EnableDeliveryTracing();
 });
 ```
+
+## Suppression (when intentional)
+
+```csharp
+#pragma warning disable ABUS005
+cfg.UseConsumerFailureCooldown(TimeSpan.FromSeconds(10));
+#pragma warning restore ABUS005
+```

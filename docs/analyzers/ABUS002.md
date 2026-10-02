@@ -30,3 +30,11 @@ catch (InvalidOperationException)
 {
 }
 ```
+
+## Suppression (when intentional)
+
+```csharp
+#pragma warning disable ABUS002
+catch (Exception) { /* boundary handler */ }
+#pragma warning restore ABUS002
+```

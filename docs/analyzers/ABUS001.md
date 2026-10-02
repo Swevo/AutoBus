@@ -27,3 +27,11 @@ After:
 ```csharp
 await bus.PublishAsync(message);
 ```
+
+## Suppression (when intentional)
+
+```csharp
+#pragma warning disable ABUS001
+bus.PublishAsync(message); // intentional fire-and-forget
+#pragma warning restore ABUS001
+```
