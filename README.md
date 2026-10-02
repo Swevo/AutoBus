@@ -60,6 +60,8 @@ Then resolve `IMessageScheduler` for deferred delivery:
 await scheduler.SchedulePublishAsync(new OrderCreated { OrderId = 42 }, TimeSpan.FromMinutes(5));
 ```
 
+Full setup walkthrough: [`samples/AutoBus.AdvancedSample/README.md`](samples/AutoBus.AdvancedSample/README.md)
+
 ## Install
 
 ```bash
