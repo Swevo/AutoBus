@@ -74,6 +74,12 @@ For cross-process messaging over RabbitMQ:
 dotnet add package Swevo.AutoBus.RabbitMQ
 ```
 
+For guardrails in consuming applications:
+
+```bash
+dotnet add package Swevo.AutoBus.Analyzers
+```
+
 ## Core concepts
 
 - **`IConsumer<TMessage>`** — implement this for each message type you handle.
@@ -163,6 +169,14 @@ MassTransit for exactly this reason.
 - **Small surface area.** Consumers, publish/send, retry — no bespoke DSL to learn.
 - **Same code, two transports.** Consumers are written once; swapping `InMemoryTransport` for
   `RabbitMqTransport` is a one-line DI change.
+
+## Analyzer package
+
+`Swevo.AutoBus.Analyzers` adds reliability-focused Roslyn diagnostics:
+
+- **ABUS001** — warns when `PublishAsync` / `SendAsync` / `SchedulePublishAsync` is fire-and-forget.
+- **ABUS002** — warns on broad `catch (Exception)` inside `IConsumer<T>` / `IRequestHandler<,>`.
+- **ABUS003** — warns when `UseRetry(...)` is configured with an excessively large retry count.
 
 ## Roadmap
 

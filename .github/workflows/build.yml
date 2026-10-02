@@ -52,6 +52,7 @@ jobs:
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
       - run: dotnet pack src/AutoBus/AutoBus.csproj --configuration Release --no-build --output nupkgs /p:Version=${{ steps.version.outputs.version }}
       - run: dotnet pack src/AutoBus.RabbitMQ/AutoBus.RabbitMQ.csproj --configuration Release --no-build --output nupkgs /p:Version=${{ steps.version.outputs.version }}
+      - run: dotnet pack src/AutoBus.Analyzers/AutoBus.Analyzers.csproj --configuration Release --no-build --output nupkgs /p:Version=${{ steps.version.outputs.version }}
       - uses: actions/upload-artifact@v4
         with:
           name: nuget-package
