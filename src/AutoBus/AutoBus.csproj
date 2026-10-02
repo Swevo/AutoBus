@@ -6,11 +6,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
 
     <PackageId>Swevo.AutoBus</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Justin Bannister</Authors>
     <Copyright>Copyright (c) 2026 Justin Bannister</Copyright>
-    <Description>Free, MIT-licensed in-process message bus for .NET with pub/sub consumers, Polly-backed retry, and transactional-outbox-friendly delivery. A focused alternative to MassTransit for modular monoliths that want reliable messaging without adopting a paid distributed messaging framework or a heavyweight broker dependency.</Description>
-    <PackageTags>messaging;message-bus;pubsub;outbox;masstransit-alternative;polly;resilience;dotnet;csharp;free;mit;modular-monolith</PackageTags>
+    <Description>Free, MIT-licensed message bus for .NET with pub/sub consumers, retries, middleware, dead-letter support, idempotency hooks, deferred scheduling, delivery tracing, partitioned concurrency, and request/response. A focused alternative to MassTransit for modular monoliths and lightweight services.</Description>
+    <PackageTags>messaging;message-bus;pubsub;outbox;idempotency;dead-letter;middleware;scheduler;observability;opentelemetry;resilience;dotnet;csharp;free;mit;modular-monolith</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
@@ -23,7 +23,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
-    <PackageReleaseNotes>1.1.0: Add in-process request/response messaging via IRequestClient&lt;TRequest, TResponse&gt; and IRequestHandler&lt;TRequest, TResponse&gt; with correlated replies, configurable timeout handling, and retry-backed handler execution. 1.0.1: Add missing package icon. 1.0.0: Initial release. IConsumer&lt;T&gt;, IMessageBus (Publish/Send), in-memory transport, Polly retry, DI registration.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.2.0: Add middleware pipeline, dead-letter sink abstraction, message deduplication hook, deferred scheduling (IMessageScheduler), delivery trace sink, partition-key concurrency controls, retry jitter option, consumer failure cooldown, and minimal saga primitives (ISaga/ISagaStateStore). 1.1.0: Add in-process request/response messaging via IRequestClient&lt;TRequest, TResponse&gt; and IRequestHandler&lt;TRequest, TResponse&gt; with correlated replies, configurable timeout handling, and retry-backed handler execution. 1.0.1: Add missing package icon. 1.0.0: Initial release. IConsumer&lt;T&gt;, IMessageBus (Publish/Send), in-memory transport, Polly retry, DI registration.</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="" />

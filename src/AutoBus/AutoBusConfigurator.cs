@@ -110,4 +110,75 @@ public sealed class AutoBusConfigurator
         _options.RequestTimeout = timeout;
         return this;
     }
+
+    /// <summary>Configures retry jitter usage.</summary>
+    public AutoBusConfigurator UseRetryJitter(bool enabled = true)
+    {
+        _options.RetryUseJitter = enabled;
+        return this;
+    }
+
+    /// <summary>Registers middleware that wraps each consumer invocation.</summary>
+    public AutoBusConfigurator AddMiddleware<TMiddleware>() where TMiddleware : class, IConsumeMiddleware
+    {
+        _services.AddScoped<IConsumeMiddleware, TMiddleware>();
+        return this;
+    }
+
+    /// <summary>Overrides dead-letter sink implementation.</summary>
+    public AutoBusConfigurator UseDeadLetterSink<TDeadLetterSink>()
+        where TDeadLetterSink : class, IDeadLetterSink
+    {
+        _services.AddSingleton<IDeadLetterSink, TDeadLetterSink>();
+        return this;
+    }
+
+    /// <summary>Overrides message deduplicator implementation.</summary>
+    public AutoBusConfigurator UseDeduplicator<TDeduplicator>()
+        where TDeduplicator : class, IMessageDeduplicator
+    {
+        _services.AddSingleton<IMessageDeduplicator, TDeduplicator>();
+        return this;
+    }
+
+    /// <summary>Enables delivery trace snapshots via the built-in in-memory sink.</summary>
+    public AutoBusConfigurator EnableDeliveryTracing()
+    {
+        _options.EnableDeliveryTracing = true;
+        _services.AddSingleton<IDeliveryTraceSink, InMemoryDeliveryTraceSink>();
+        return this;
+    }
+
+    /// <summary>Configures message partitioning and per-partition concurrency.</summary>
+    public AutoBusConfigurator UsePartitioning(Func<object, Type, string?> partitionKeySelector, int maxConcurrencyPerPartition = 1)
+    {
+        ArgumentNullException.ThrowIfNull(partitionKeySelector);
+        if (maxConcurrencyPerPartition <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxConcurrencyPerPartition), "Value must be greater than zero.");
+        }
+
+        _options.PartitionKeySelector = partitionKeySelector;
+        _options.MaxConcurrencyPerPartition = maxConcurrencyPerPartition;
+        return this;
+    }
+
+    /// <summary>Temporarily pauses deliveries for a consumer after a failure.</summary>
+    public AutoBusConfigurator UseConsumerFailureCooldown(TimeSpan cooldown)
+    {
+        if (cooldown < TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(cooldown), "Cooldown cannot be negative.");
+        }
+
+        _options.ConsumerFailureCooldown = cooldown;
+        return this;
+    }
+
+    /// <summary>Enables/disables dead-letter sink invocation when a delivery fails permanently.</summary>
+    public AutoBusConfigurator UseDeadLettering(bool enabled = true)
+    {
+        _options.EnableDeadLettering = enabled;
+        return this;
+    }
 }

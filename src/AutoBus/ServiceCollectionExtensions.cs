@@ -29,14 +29,24 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton(registry);
         services.TryAddSingleton(requestHandlerRegistry);
         services.TryAddSingleton(options);
+        services.TryAddSingleton<ConsumerHealthState>();
         services.TryAddSingleton<RequestResponseRegistry>();
+        services.TryAddSingleton<IMessageDeduplicator, NoopMessageDeduplicator>();
+        services.TryAddSingleton<IDeliveryTraceSink, NoopDeliveryTraceSink>();
+        services.TryAddSingleton<IDeadLetterSink, LoggingDeadLetterSink>();
         services.TryAddSingleton(sp => RetryPipelineFactory.Create(sp.GetRequiredService<AutoBusOptions>()));
         services.TryAddSingleton(sp => new ConsumerDispatcher(
             sp,
             sp.GetRequiredService<ResiliencePipeline>(),
+            sp.GetRequiredService<IDeadLetterSink>(),
+            sp.GetRequiredService<IMessageDeduplicator>(),
+            sp.GetRequiredService<IDeliveryTraceSink>(),
+            sp.GetRequiredService<AutoBusOptions>(),
+            sp.GetRequiredService<ConsumerHealthState>(),
             sp.GetService<ILogger<ConsumerDispatcher>>() ?? NullLogger<ConsumerDispatcher>.Instance));
         services.TryAddSingleton<IBusTransport, InMemoryTransport>();
         services.TryAddSingleton<IMessageBus, MessageBus>();
+        services.TryAddSingleton<IMessageScheduler, InMemoryMessageScheduler>();
         services.TryAddSingleton(typeof(IRequestClient<,>), typeof(RequestClient<,>));
 
         return services;

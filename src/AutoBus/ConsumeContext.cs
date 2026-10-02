@@ -6,7 +6,8 @@ namespace AutoBus;
 public sealed class ConsumeContext<TMessage>(
     TMessage message,
     CancellationToken cancellationToken = default,
-    Guid? correlationId = null)
+    Guid? correlationId = null,
+    Guid? messageId = null)
     where TMessage : class
 {
     /// <summary>The delivered message.</summary>
@@ -19,4 +20,9 @@ public sealed class ConsumeContext<TMessage>(
     /// Correlation identifier for the current delivery, when one exists (for example request/response).
     /// </summary>
     public Guid? CorrelationId { get; } = correlationId;
+
+    /// <summary>
+    /// Delivery identifier used for idempotency and diagnostics.
+    /// </summary>
+    public Guid MessageId { get; } = messageId ?? Guid.NewGuid();
 }

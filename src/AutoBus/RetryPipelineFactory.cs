@@ -18,6 +18,7 @@ internal static class RetryPipelineFactory
                 MaxRetryAttempts = options.RetryCount,
                 Delay = options.RetryBaseDelay,
                 BackoffType = DelayBackoffType.Exponential,
+                UseJitter = options.RetryUseJitter,
             })
             .Build();
     }

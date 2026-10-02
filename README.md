@@ -38,6 +38,28 @@ services.AddAutoBus(cfg => cfg.AddConsumer<SendWelcomeEmail>());
 await messageBus.PublishAsync(new OrderCreated { OrderId = 42 });
 ```
 
+### Advanced reliability/observability setup
+
+```csharp
+services.AddAutoBus(cfg =>
+{
+    cfg.AddConsumer<SendWelcomeEmail>();
+    cfg.UseRetry(retryCount: 5, baseDelay: TimeSpan.FromMilliseconds(100));
+    cfg.UseRetryJitter();
+    cfg.UseDeadLettering();
+    cfg.UsePartitioning((message, _) =>
+        message is OrderCreated created ? $"order:{created.OrderId}" : null);
+    cfg.UseConsumerFailureCooldown(TimeSpan.FromSeconds(10));
+    cfg.EnableDeliveryTracing();
+});
+```
+
+Then resolve `IMessageScheduler` for deferred delivery:
+
+```csharp
+await scheduler.SchedulePublishAsync(new OrderCreated { OrderId = 42 }, TimeSpan.FromMinutes(5));
+```
+
 ## Install
 
 ```bash
@@ -61,6 +83,11 @@ dotnet add package Swevo.AutoBus.RabbitMQ
   `IRequestHandler<TRequest, TResponse>` and awaits its correlated response.
 - **Retry** — every consumer invocation runs through a Polly retry pipeline (exponential
   backoff, 3 attempts by default). Configure with `cfg.UseRetry(retryCount, baseDelay)`.
+- **Middleware** — register `IConsumeMiddleware` components to wrap each consumer invocation.
+- **Dead-letter + idempotency hooks** — plug in `IDeadLetterSink` and `IMessageDeduplicator`.
+- **Scheduling** — publish deferred messages with `IMessageScheduler`.
+- **Partitioning + cooldown** — optional per-key concurrency gates and post-failure cooldowns.
+- **Tracing/diagnostics** — `IDeliveryTraceSink` plus built-in telemetry hooks.
 - **Transports** — `InMemoryTransport` (default, in-process dispatch) or
   `RabbitMqTransport`/`RabbitMqConsumerHost` (cross-process, via `Swevo.AutoBus.RabbitMQ`).
 
@@ -137,9 +164,10 @@ MassTransit for exactly this reason.
 
 ## Roadmap
 
-- Saga/state-machine support and additional broker transports (Azure Service Bus, Amazon SQS)
-  are being considered for future releases, scoped to real demand rather than parity with
-  MassTransit's full feature set.
+- Richer OpenTelemetry semantic conventions and exporter guidance.
+- Distributed outbox/inbox reference packages on top of the core `IMessageDeduplicator` and dead-letter abstractions.
+- Saga persistence helpers built on `ISaga<TMessage, TSagaState>` and `ISagaStateStore<TSagaState>`.
+- Additional broker transports (Azure Service Bus, Amazon SQS) based on demand.
 
 ## Related Packages
 
