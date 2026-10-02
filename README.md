@@ -178,6 +178,11 @@ MassTransit for exactly this reason.
 - **ABUS002** — warns on broad `catch (Exception)` inside `IConsumer<T>` / `IRequestHandler<,>`.
 - **ABUS003** — warns when `UseRetry(...)` is configured with an excessively large retry count.
 
+All rules include code fixes. Rule docs:
+[`ABUS001`](docs/analyzers/ABUS001.md),
+[`ABUS002`](docs/analyzers/ABUS002.md),
+[`ABUS003`](docs/analyzers/ABUS003.md).
+
 ## Roadmap
 
 - Richer OpenTelemetry semantic conventions and exporter guidance.
